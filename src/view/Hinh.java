@@ -234,9 +234,12 @@ case KeyEvent.VK_RIGHT:
 	}
 	break;
 case KeyEvent.VK_SPACE:
+		controllerBoom.kiemTraBoom(hero.getxHero(), hero.getyHero(),hero.getLevelBom());
+		if(controllerBoom.isDatDuoc){
 		datBoom = true;
 		timeBoom.start();
 		countTmp  =0;
+	
 	try {
 	boom = new Boom(hero.getxHero(), hero.getyHero());
 	} catch (Exception e1) {
@@ -244,10 +247,15 @@ case KeyEvent.VK_SPACE:
 	}
 	booms.add(boom);
 	break;
-default:
-	break;
+}
+		else {
+			JOptionPane.showConfirmDialog(null, "Dat Khong Duoc");
+		}
 }
 }
+
+
+
 @Override
 public void keyReleased(KeyEvent e) {
 }
