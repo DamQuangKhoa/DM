@@ -58,7 +58,6 @@ public class XuLyHero implements HeroMethod {
 	public int di(int data, boolean huong) {
 		if (huong == false) {
 			--data;
-			System.out.println(data);
 			return data;
 		}
 		++data;

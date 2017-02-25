@@ -19,11 +19,23 @@ import controler.Item;
 import model.Boom;
 import model.General;
 import model.Hero;
+import model_creep.Creep;
+import model_creep.Creep_1;
+import model_creep.Creep_2;
+import model_creep.Creep_3;
 import model_item.ItemBom;
 import model_item.ItemHeart;
 import model_item.ItemLua;
 
 public class Hinh  extends JPanel implements KeyListener {
+	public static final int DODAI=20;
+	public static final int CO=0,BUICO=1,CAY=2,DA1=3,DA2=4,DA3=5,DA4=6,DA5=7
+	,THUNG=8,	NUOC=9;
+	
+	
+	public static int[][] map = Map.map1;
+		
+
 	HinhAnh image;
 	ControllerHero controller;
 	ControllerBoom controllerBoom;
@@ -31,37 +43,14 @@ public class Hinh  extends JPanel implements KeyListener {
 	Boom boom;
 	public ArrayList<Boom> booms;
 	public ArrayList<Boom> boomNo;
-	Timer timeBoom;
-public static final int DODAI=20;
-public static final int CO=0,BUICO=1,CAY=2,DA1=3,DA2=4,DA3=5,DA4=6,DA5=7
-,THUNG=8,	NUOC=9;
+	Timer timeBoom,timeCreep;
+	Creep creep_1,creep_2,creep_3;
+	
+
 public   boolean diXuong= false,diLen=false,sangTrai = true,
 sangPhai = false, datBoom = false,isNoChua = false;
 int tmp,count,i,j,countTmp;
 Item itemLua,itemHeart,itemBom;
-public static int[][] map = {
-		{DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA2, DA1, DA3, DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1},
-		{DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1, DA1},
-		{DA1, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO},
-		{CO, CO, CO, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO},
-		{DA1, CO, DA1, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO},
-		{CO, CO, CO, CO, CO, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO},
-		{DA1, CO, DA1, CO, DA1, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO},
-		{CO, CO, CO, CO, CO, CO, CO, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO},
-		{DA1, CO, DA1, CO, DA1, CO, DA1, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO},
-		{CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO},
-		{DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, CO, CO, CO, CO, BUICO, BUICO, BUICO, BUICO, BUICO, BUICO},
-		{CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO},
-		{DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, CO, CO, CO, CO, CO, CO, CO, CO},
-		{CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, DA1, CO, DA1, CO, DA1, CO},
-		{DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, CO, CO, CO, CO, CO, CO},
-		{CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, DA1, CO, DA1, CO},
-		{DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, CO, CO, CO, CO},
-		{CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, DA1, CO},
-		{DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, DA1, CO, CO, CO},
-		{CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO, CO}
-
-};
 
 public Hinh() throws IOException {
 	hero = new Hero();
@@ -74,11 +63,15 @@ public Hinh() throws IOException {
 	controllerBoom = ControllerBoom.getInstance();
 	image = new HinhAnh();
 	timeBoom = new Timer(500, new ThoiGianBom());
-//	timeBoom.stop();
+	timeCreep = new Timer(500, new ThoiGianCreep());
 	itemBom = new ItemBom(9, 10);
-
 	itemLua = new ItemHeart(15, 16);
 	itemHeart = new ItemLua(5, 6);
+	
+	creep_1 = new Creep_1(1, 1);
+	creep_2 = new Creep_2(2, 1);
+	creep_3 = new Creep_3(3, 1);
+	timeCreep.start();
 }
 @Override
 	protected void paintComponent(Graphics g) {
@@ -113,6 +106,9 @@ public Hinh() throws IOException {
 				case NUOC:
 					General.veHinh(HinhAnh.nuoc, i, j, g);
 					break;
+				case CAY:
+					General.veHinh(HinhAnh.cay, i, j, g);
+					break;
 				default:
 					break;
 				}
@@ -144,7 +140,9 @@ public Hinh() throws IOException {
 			if(hero.isNhanIteam(itemHeart)){
 				itemHeart.veLaiItem();
 			}
-		
+		creep_1.veCreep(g);
+		creep_2.veCreep(g);
+		creep_3.veCreep(g);
 		repaint();
 	}
 public void veBoom(Graphics g){
@@ -274,5 +272,16 @@ public ThoiGianBom() throws IOException {
 		}
 		
 }
+}
+
+private class ThoiGianCreep implements ActionListener{
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+			creep_1.diChuyen(29, 29, map);
+			creep_2.diChuyen(29, 29, map);
+			creep_3.diChuyen(29, 29, map);
+	}
+	
 }
 }
